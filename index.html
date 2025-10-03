@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Halloween Pumpkin Catcher — SAFE</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="preloader"><div class="pwrap"><div class="spinner"></div><div class="ptxt">Загрузка…</div></div></div>
+  <div class="hud">
+    <div class="left"><div class="score" id="score">🎃 0 / 100</div><div class="timer" id="timer">⏱ 0.0s</div><div class="lives" id="lives">❤️❤️❤️</div></div>
+    <div class="effects"><span id="slowBadge" class="badge hidden">🍬 SLOW</span><span id="fastBadge" class="badge hidden">🕸 FAST</span><span id="pausedBadge" class="badge hidden">⏸ PAUSE</span><button id="btnVol" class="vol" aria-label="Toggle sound">🔊</button></div>
+  </div>
+  <div id="stageWrap" data-parallax="true"><canvas id="game" width="900" height="600" aria-label="Pumpkin Catcher game"></canvas></div>
+  <div class="controls"><button id="btnPlay" aria-label="Play/Pause">⏯</button></div>
+  <div id="startOverlay" class="overlay"><div class="modal"><h1>🎃 Pumpkin Catcher (SAFE)</h1><p>Веди корзину пальцем. Собери 100 🎃. Избегай 🕷 и 🕸. 🍬 замедляет, 🕸 ускоряет.</p><div class="row"><label for="difficulty">Сложность:</label><select id="difficulty"><option value="easy">Лёгкий</option><option value="normal" selected>Норм</option><option value="hard">Хард</option><option value="expert">Эксперт</option></select></div><button id="btnStart" class="primary">Play</button></div></div>
+  <div id="messageOverlay" class="overlay hidden"><div class="modal"><h2 id="msgTitle">Победа!</h2><p id="msgText">Ты собрал 100 тыкв! 🎃🏆</p><div class="actions"><button id="btnRestart" class="primary">Играть снова</button></div></div></div>
+  <footer class="footer">Корзина: <strong>ОНЛАЙНТРЕЙД.РУ</strong></footer>
+  <audio id="bgm" preload="auto"></audio>
+  <script src="script.js"></script>
+</body>
+</html>

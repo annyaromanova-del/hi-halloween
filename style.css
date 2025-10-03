@@ -1,0 +1,18 @@
+:root{--hud:#ffffffcc;--btnShadow:rgba(0,0,0,.35)}
+*{box-sizing:border-box} html,body{margin:0;height:100%;background:#0b1330;color:#fff;font:16px/1.4 system-ui,Segoe UI,Roboto,Arial}
+#stageWrap{display:flex;align-items:center;justify-content:center;margin:64px auto 56px;width:min(95vw,900px);background:url('assets/bg_video.jpg') center/cover no-repeat;border-radius:16px;box-shadow:0 12px 40px var(--btnShadow);overflow:hidden}
+#game{display:block;width:100%;height:auto;border-radius:16px;background:transparent}
+.hud{position:fixed;top:10px;left:50%;transform:translateX(-50%);width:min(900px,95vw);display:flex;justify-content:space-between;align-items:center;gap:8px;z-index:10}
+.hud .left{display:flex;gap:8px;flex-wrap:wrap}
+.score,.timer,.lives{background:#101a3b;border:1px solid #ffffff22;padding:6px 12px;border-radius:12px;font-weight:700;color:var(--hud)}
+.effects{display:flex;gap:8px}.badge{background:#243066;border:1px solid #ffffff22;padding:6px 10px;border-radius:999px;font-size:.85rem;color:#d7e1ff}.hidden{display:none}
+.effects .vol{border:1px solid #ffffff22;background:#0e173b;color:#d7e1ff;padding:6px 10px;border-radius:10px;cursor:pointer}
+.controls{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);width:min(900px,95vw);display:flex;justify-content:center;z-index:10}
+.controls button{padding:14px 18px;border:0;border-radius:14px;background:linear-gradient(180deg,#1a2452,#0e173b);color:#fff;font-weight:700;box-shadow:0 8px 18px var(--btnShadow);cursor:pointer}
+.overlay{position:fixed;inset:0;display:grid;place-items:center;background:rgba(4,8,20,.6);backdrop-filter:blur(6px);z-index:20}
+.overlay.hidden{display:none}
+.modal{width:min(92vw,560px);background:linear-gradient(180deg,#0f1c4d,#0b1433);border:1px solid #ffffff22;border-radius:16px;padding:22px;text-align:center;box-shadow:0 10px 30px var(--btnShadow)}
+.primary{margin-top:10px;background:linear-gradient(180deg,#ff8a2b,#d86b10);border:0;color:#231100;font-weight:800;padding:10px 16px;border-radius:12px;cursor:pointer}
+.footer{text-align:center;color:#aab6ff;opacity:.6;font-size:.9rem;margin-bottom:16px}
+#preloader{position:fixed;inset:0;display:grid;place-items:center;background:#000a;color:#fff;z-index:30}
+.pwrap{display:flex;flex-direction:column;align-items:center;gap:10px}.spinner{width:40px;height:40px;border-radius:50%;border:4px solid #4657a6;border-top-color:#ff8a2b;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
