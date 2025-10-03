@@ -16,3 +16,5 @@
 .footer{text-align:center;color:#aab6ff;opacity:.6;font-size:.9rem;margin-bottom:16px}
 #preloader{position:fixed;inset:0;display:grid;place-items:center;background:#000a;color:#fff;z-index:30}
 .pwrap{display:flex;flex-direction:column;align-items:center;gap:10px}.spinner{width:40px;height:40px;border-radius:50%;border:4px solid #4657a6;border-top-color:#ff8a2b;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+/* Гарантированно прячем прелоадер, как только JS добавит класс */
+#preloader.hidden { display: none !important; }
