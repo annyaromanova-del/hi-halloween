@@ -398,3 +398,9 @@ if (!LANG_PARAM){
   setPct();
   setTimeout(done, 2500);
 })();
+// Страховка: уберём прелоадер через 1.5с даже если что-то пошло не так
+setTimeout(() => {
+  const pre = document.getElementById('preloader');
+  if (pre) pre.classList.add('hidden');
+}, 1500);
+
