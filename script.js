@@ -292,12 +292,12 @@ function resizeCanvas(){
   SIZE_BOOST = needsSizeBoost() ? 1.25 : 1;
   const mobileLike = SIZE_BOOST > 1;
   const MOBILE_BASKET_BASE = 0.375;
-  const MOBILE_BASKET_SCALE = MOBILE_BASKET_BASE * 0.85; // shrink basket by 15% on mobile
   const DESKTOP_BASKET_BASE = 0.75;
-  const DESKTOP_BASKET_SCALE = DESKTOP_BASKET_BASE * 1.17; // baseline desktop basket scale
-  let basketScale = mobileLike ? MOBILE_BASKET_SCALE : DESKTOP_BASKET_SCALE;
-  if (!mobileLike) {
-    basketScale *= 1.15; // enlarge basket by 15% on desktop
+  let basketScale = mobileLike ? MOBILE_BASKET_BASE : DESKTOP_BASKET_BASE;
+  if (mobileLike) {
+    basketScale *= 0.85; // shrink basket by 15% on mobile
+  } else if (IS_BROWSER_VERSION) {
+    basketScale *= 1.15; // enlarge basket by 15% for desktop browser players
   }
   if (!NIGHT_MODE) {
     basketScale *= 1.15; // enlarge daytime basket by 15%
