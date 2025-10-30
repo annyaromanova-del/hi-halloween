@@ -294,8 +294,11 @@ function resizeCanvas(){
   const MOBILE_BASKET_BASE = 0.375;
   const MOBILE_BASKET_SCALE = MOBILE_BASKET_BASE * 0.85; // shrink basket by 15% on mobile
   const DESKTOP_BASKET_BASE = 0.75;
-  const DESKTOP_BASKET_SCALE = DESKTOP_BASKET_BASE * 1.17; // enlarge basket by 17% on desktop
+  const DESKTOP_BASKET_SCALE = DESKTOP_BASKET_BASE * 1.17; // baseline desktop basket scale
   let basketScale = mobileLike ? MOBILE_BASKET_SCALE : DESKTOP_BASKET_SCALE;
+  if (!mobileLike) {
+    basketScale *= 1.15; // enlarge basket by 15% on desktop
+  }
   if (!NIGHT_MODE) {
     basketScale *= 1.15; // enlarge daytime basket by 15%
   }
