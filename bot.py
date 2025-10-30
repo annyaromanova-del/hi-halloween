@@ -1,81 +1,66 @@
-"""Simple Telegram bot for launching the Halloween game."""
-
 import asyncio
 import logging
 import os
-from typing import NoReturn
-
-from aiogram import Bot, Dispatcher, F
-from aiogram.filters import CommandStart
-from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, Message
+from aiogram import Bot, Dispatcher, Router, types, F
+from aiogram.filters import Command, CommandStart
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from dotenv import load_dotenv
 
-LOGGER = logging.getLogger(__name__)
+load_dotenv()
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 
+# ВКЛ. ЛОГИ
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-async def handle_start(message: Message) -> None:
-    """Send greeting message and inline buttons to the user."""
-    keyboard = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                # Нельзя отследить клик по URL-кнопке: Telegram не сообщает об этом в API.
-                InlineKeyboardButton(
-                    text="🎮 Играть в Halloween Game",
-                    url="https://annyaromanova-del.github.io/hi-halloween/",
-                ),
-                InlineKeyboardButton(
-                    text="Я запустил(-а) игру ✅",
-                    callback_data="played",
-                ),
-            ]
-        ]
-    )
+bot = Bot(token=BOT_TOKEN)
+dp = Dispatcher()
+rt = Router()
+dp.include_router(rt)
 
-    await message.answer(
-        "Привет! 👋 Нажми кнопку, чтобы начать игру:",
-        reply_markup=keyboard,
-    )
-    await message.answer("Удачной игры! 🎃")
+GAME_URL = "https://annyaromanova-del.github.io/hi-halloween/"
 
+@rt.message(CommandStart())
+async def on_start(m: types.Message):
+    kb = InlineKeyboardMarkup(inline_keyboard=[[
+        InlineKeyboardButton(text="🎮 Играть в Halloween Game", url=GAME_URL),
+        InlineKeyboardButton(text="Я запустил(-а) игру ✅", callback_data="played")
+    ]])
+    await m.answer("Привет! 👋 Нажми кнопку, чтобы начать игру:", reply_markup=kb)
+    await m.answer("Удачной игры! 🎃")
 
-async def handle_played(callback: CallbackQuery) -> None:
-    """Handle acknowledgement that the game has been launched."""
-    await callback.answer()
-    await callback.message.answer(
-        "Удачной игры! 🎃 Если ссылка не открывается внутри Telegram, попробуйте открыть её в браузере",
-    )
+@rt.message(Command("halloweengame"))
+async def on_halloween_cmd(m: types.Message):
+    kb = InlineKeyboardMarkup(inline_keyboard=[[
+        InlineKeyboardButton(text="🎮 Играть в Halloween Game", url=GAME_URL)
+    ]])
+    await m.answer("Готово! Жми и играй:", reply_markup=kb)
 
+@rt.callback_query(F.data == "played")
+async def on_played(cb: types.CallbackQuery):
+    await cb.message.answer("Удачной игры! 🎃 Если ссылка не открылась внутри Telegram, открой её в браузере.")
+    await cb.answer()
 
-async def main() -> NoReturn:
-    """Load configuration and start the bot."""
-    load_dotenv()
+# На всякий: ответ на /ping
+@rt.message(Command("ping"))
+async def ping(m: types.Message):
+    await m.answer("pong ✅")
 
-    bot_token = os.getenv("BOT_TOKEN")
-    if not bot_token:
-        raise ValueError("BOT_TOKEN is not set. Please configure it in the environment variables.")
+# Фоллбек на любое сообщение — чтобы видеть, что бот жив
+@rt.message()
+async def fallback(m: types.Message):
+    await m.answer("Напиши /start или /halloweengame 🙂")
 
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    )
-    LOGGER.info("Starting Halloween Telegram bot")
-
-    bot = Bot(token=bot_token)
-    dp = Dispatcher()
-
-    dp.message.register(handle_start, CommandStart())
-    dp.callback_query.register(handle_played, F.data == "played")
-
-    try:
-        await dp.start_polling(bot)
-    finally:
-        await bot.session.close()
-
+async def main():
+    if not BOT_TOKEN:
+        raise RuntimeError("Нет BOT_TOKEN в .env")
+    # ВАЖНО: удаляем вебхук при запуске polling
+    await bot.delete_webhook(drop_pending_updates=True)
+    logger.info("Bot started")
+    await dp.start_polling(bot)
 
 if __name__ == "__main__":
     try:
         asyncio.run(main())
     except (KeyboardInterrupt, SystemExit):
-        LOGGER.info("Bot stopped by user")
-    except Exception as exc:  # noqa: BLE001 - log unexpected errors to simplify debugging
-        LOGGER.exception("Unexpected error: %s", exc)
+        logger.info("Bot stopped")
