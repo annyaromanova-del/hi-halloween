@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Hi, Halloween: Pumpkin Catcher!</title>
+  <link rel="preload" as="image" href="assets/day/bg_video.png?v=v12">
+  <link rel="stylesheet" href="style.css?v=v12">
+
+<script>
+(function(){
+  function nuke(){ 
+    ['preloader','loading'].forEach(id=>{ const el=document.getElementById(id); if(el) el.remove(); });
+    const spin = document.querySelector('.spinner, .loader, [aria-busy="true"]');
+    if (spin) spin.remove();
+  }
+  nuke();
+  document.addEventListener('DOMContentLoaded', nuke, {once:true});
+  window.addEventListener('load', nuke, {once:true});
+  window.onerror = nuke;
+})();
+</script>
+
+  <link rel="stylesheet" href="rwizard-patch.css" />
+</head>
+<body class=\"modal-open\" id="game-root">
+  <div class="hud-container">
+    <div class="hud-logo" aria-hidden="true">
+      <img src="лого-1.png" alt="Hi, Halloween!" loading="lazy" />
+    </div>
+    <div class="hud">
+      <div class="left">
+        <div class="pill" id="score">🎃 0 / 100</div>
+        <div class="pill" id="timer">⏱ 0.0s</div>
+        <div class="pill" id="lives">❤️❤️❤️</div>
+        <span class="badge hidden" id="slowBadge" aria-label="Режим «Тыквопад» активен" title="Режим «Тыквопад» активен">🍬 Тыквопад</span>
+        <span class="badge hidden" id="fastBadge">🕸 Шторм</span>
+        <span class="badge hidden" id="quakeBadge" aria-label="Режим «Дрожь» активен" title="Режим «Дрожь» активен">💥 Дрожь</span>
+        <span class="badge hidden" id="pausedBadge">⏸ Пауза</span>
+      </div>
+      <div class="right">
+        <button class="btn hud-btn" id="btnPlay" type="button">⏯ Пауза</button>
+        <button class="btn hud-btn" id="btnVol" title="Mute/Unmute" type="button">🔊</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="stage" id="stageWrap">
+    <canvas id="game" width="1350" height="900"></canvas>
+  </div>
+
+  <div class="controls-wrapper" id="controlsWrapper" aria-hidden="true">
+    <div class="controls-surface"></div>
+  </div>
+
+  <div class="overlay" id="introOverlay">
+    <div class="intro-wrapper">
+      <video id="introVideo" src="assets/video/intro.mp4" preload="auto" playsinline webkit-playsinline autoplay></video>
+      <button class="btn ghost intro-skip" id="introSkip" type="button">Пропустить заставку</button>
+      <button class="btn primary intro-play" id="introPlay" type="button">▶ Смотреть заставку</button>
+      <p class="intro-hint" id="introHint">Нажмите «Смотреть заставку», если видео не запустилось автоматически.</p>
+    </div>
+  </div>
+
+  <div class="overlay hidden" id="startOverlay">
+    <div class="modal">
+
+      <h1>🎃 Hi, Halloween: Pumpkin Catcher!</h1>
+      <p>Выберите сложность и начните игру.</p>
+      <div class="diff-grid">
+        <button class="btn pill diff" data-diff="easy">Легко</button>
+        <button class="btn pill diff" data-diff="normal">Норм</button>
+        <button class="btn pill diff" data-diff="hard">Сложно</button>
+        <button class="btn pill diff" data-diff="expert">Эксперт</button>
+      </div>
+      <div class="footer">
+        <span class="footer-note">Подсказка: Поймайте 100 тыкв — сделайте это быстрее всех!</span>
+        <button class="btn" id="btnShareGame">Поделиться игрой</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay hidden" id="messageOverlay">
+    <div class="modal victory-modal">
+
+      <h2 id="msgTitle">Победа!</h2>
+      <p id="msgText">Ты собрал 100 тыкв!</p>
+
+      <div class="win-details" id="winDetails">
+        <div class="summary-card">
+          <span class="label">Игрок</span>
+          <span class="value" id="winNick">—</span>
+        </div>
+        <div class="summary-card">
+          <span class="label">Время</span>
+          <span class="value" id="winTime">—</span>
+        </div>
+        <div class="summary-card">
+          <span class="label">Сложность</span>
+          <span class="value" id="winDiff">—</span>
+        </div>
+      </div>
+
+      <div class="win-leaderboard">
+        <h3>🏆 Таблица победителей</h3>
+        <div id="winLeaderboard" class="table-wrap">Загрузка…</div>
+      </div>
+
+      <p class="win-bonus" id="winBonus">За отличную игру вы добавлены в рейтинг лучших игроков! Играйте дальше, чтобы улучшить свой результат и собрать все тыквы на экспертном уровне.</p>
+
+      <div class="win-actions" id="winActions">
+        <button class="btn primary" id="btnRestart" data-action="restart">Начать сначала</button>
+        <button class="btn ghost" id="btnShare">Поделиться</button>
+      </div>
+      <div class="loss-actions hidden" id="lossActions">
+        <button class="btn primary" data-action="restart">Начать сначала</button>
+        <button class="btn ghost" data-action="menu">Меню</button>
+      </div>
+    </div>
+  </div>
+
+    </div>
+  </div>
+
+  <audio id="bgm" preload="auto" crossorigin="anonymous"></audio>
+
+  <script src="script.js?v=v12"></script>
+
+  <div class="overlay hidden" id="recordsOverlay">
+    <div class="modal">
+
+      <h2>🏆 Рекорды</h2>
+      <div id="recordsBody"><p>Здесь появятся лучшие результаты.</p></div><h3 style="margin-top:16px">🥇 Таблица лидеров (локально)</h3><div id="lbBody"><p>Пока пусто.</p></div>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:12px">
+        <button class="btn" id="btnCloseRecords">Закрыть</button>
+        <button class="btn" id="btnResetRecords">Сбросить рекорды</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay hidden" id="shareOverlay">
+    <div class="modal share-modal">
+      <h2>Поделиться результатом</h2>
+      <a id="sharePreviewAnchor" class="share-banner-link" href="https://onlinetrade.ru" target="_blank" rel="noopener">
+        <img id="sharePreviewImage" class="share-banner" src="banner.png" alt="Hi, Halloween: Pumpkin Catcher!" loading="lazy">
+      </a>
+      <p id="sharePreviewText" class="share-preview">Ваш результат появится здесь.</p>
+      <a id="shareLink" class="share-link" href="#" target="_blank" rel="noopener">https://onlinetrade.ru</a>
+      <div class="share-targets">
+        <button class="btn ghost" data-share-target="telegram">✈️ Telegram</button>
+        <button class="btn ghost" data-share-target="whatsapp">💬 WhatsApp</button>
+        <button class="btn ghost" data-share-target="vk">🖤 ВКонтакте</button>
+      </div>
+      <div class="share-actions">
+        <button class="btn" id="btnCopyShare">📋 Скопировать</button>
+        <button class="btn" id="btnCloseShare">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay hidden" id="nickOverlay">
+    <div class="modal">
+      <h2>Как вас подписывать?</h2>
+      <p>Имя для таблицы лидеров (можно изменить позже):</p>
+      <input id="nickInput" class="pill" style="width:100%;padding:10px" placeholder="Ваш ник">
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:12px">
+        <button class="btn" id="btnSaveNick">Сохранить</button>
+        <button class="btn" id="btnSkipNick">Пропустить</button>
+      </div>
+    </div>
+  </div>
+
+  <script defer src="rwizard-patch.js"></script>
+  <script defer src="nick-autostart-fix.js?v=2"></script>
+</body>
+</html>
